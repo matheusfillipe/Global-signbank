@@ -16,25 +16,40 @@ def copy_semanticfield_names_to_translations(apps, schema_editor):
     SemanticField = apps.get_model('dictionary', 'SemanticField')
     SemanticFieldTranslation = apps.get_model('dictionary', 'SemanticFieldTranslation')
     Language = apps.get_model('dictionary', 'Language')
-    translation_language_eng = Language.objects.get(language_code_3char='eng')
-    translation_language_nld = Language.objects.get(language_code_3char='nld')
-    translation_language_zho = Language.objects.get(language_code_3char='zho')
+    
+    try:
+        translation_language_eng = Language.objects.get(language_code_3char='eng')
+    except Language.DoesNotExist:
+        print("Language 'eng' not found, skipping semantic field translations for English")
+        translation_language_eng = None
+        
+    try:
+        translation_language_nld = Language.objects.get(language_code_3char='nld')
+    except Language.DoesNotExist:
+        print("Language 'nld' not found, skipping semantic field translations for Dutch")
+        translation_language_nld = None
+        
+    try:
+        translation_language_zho = Language.objects.get(language_code_3char='zho')
+    except Language.DoesNotExist:
+        print("Language 'zho' not found, skipping semantic field translations for Chinese")
+        translation_language_zho = None
     semanticfields = SemanticField.objects.filter(machine_value__gt=1)
     for semfield in semanticfields:
         translations_for_semfield = [sft.language for sft in SemanticFieldTranslation.objects.filter(semField=semfield)]
-        if semfield.name_en and translation_language_eng not in translations_for_semfield:
+        if semfield.name_en and translation_language_eng and translation_language_eng not in translations_for_semfield:
             semanticfieldtranslation_eng, created = SemanticFieldTranslation.objects.get_or_create(
                                                         semField=semfield,
                                                         language=translation_language_eng,
                                                         name=semfield.name_en)
             semanticfieldtranslation_eng.save()
-        if semfield.name_nl and translation_language_nld not in translations_for_semfield:
+        if semfield.name_nl and translation_language_nld and translation_language_nld not in translations_for_semfield:
             semanticfieldtranslation_nld, created = SemanticFieldTranslation.objects.get_or_create(
                                                         semField=semfield,
                                                         language=translation_language_nld,
                                                         name=semfield.name_nl)
             semanticfieldtranslation_nld.save()
-        if semfield.name_zh_hans and translation_language_zho not in translations_for_semfield:
+        if semfield.name_zh_hans and translation_language_zho and translation_language_zho not in translations_for_semfield:
             semanticfieldtranslation_zho, created = SemanticFieldTranslation.objects.get_or_create(
                                                         semField=semfield,
                                                         language=translation_language_zho,
@@ -51,25 +66,40 @@ def copy_derivationhistory_names_to_translations(apps, schema_editor):
     DerivationHistory = apps.get_model('dictionary', 'DerivationHistory')
     DerivationHistoryTranslation = apps.get_model('dictionary', 'DerivationHistoryTranslation')
     Language = apps.get_model('dictionary', 'Language')
-    translation_language_eng = Language.objects.get(language_code_3char='eng')
-    translation_language_nld = Language.objects.get(language_code_3char='nld')
-    translation_language_zho = Language.objects.get(language_code_3char='zho')
+    
+    try:
+        translation_language_eng = Language.objects.get(language_code_3char='eng')
+    except Language.DoesNotExist:
+        print("Language 'eng' not found, skipping derivation history translations for English")
+        translation_language_eng = None
+        
+    try:
+        translation_language_nld = Language.objects.get(language_code_3char='nld')
+    except Language.DoesNotExist:
+        print("Language 'nld' not found, skipping derivation history translations for Dutch")
+        translation_language_nld = None
+        
+    try:
+        translation_language_zho = Language.objects.get(language_code_3char='zho')
+    except Language.DoesNotExist:
+        print("Language 'zho' not found, skipping derivation history translations for Chinese")
+        translation_language_zho = None
     derivationhistories = DerivationHistory.objects.all()
     for derivhist in derivationhistories:
         translations_for_derivhist = [dht.language for dht in DerivationHistoryTranslation.objects.filter(derivHist=derivhist)]
-        if derivhist.name_en and translation_language_eng not in translations_for_derivhist:
+        if derivhist.name_en and translation_language_eng and translation_language_eng not in translations_for_derivhist:
             derivationhistorytranslation_eng, created = DerivationHistoryTranslation.objects.get_or_create(
                                                         derivHist=derivhist,
                                                         language=translation_language_eng,
                                                         name=derivhist.name_en)
             derivationhistorytranslation_eng.save()
-        if derivhist.name_nl and translation_language_nld not in translations_for_derivhist:
+        if derivhist.name_nl and translation_language_nld and translation_language_nld not in translations_for_derivhist:
             derivationhistorytranslation_nld, created = DerivationHistoryTranslation.objects.get_or_create(
                                                         derivHist=derivhist,
                                                         language=translation_language_nld,
                                                         name=derivhist.name_nl)
             derivationhistorytranslation_nld.save()
-        if derivhist.name_zh_hans and translation_language_zho not in translations_for_derivhist:
+        if derivhist.name_zh_hans and translation_language_zho and translation_language_zho not in translations_for_derivhist:
             derivationhistorytranslation_zho, created = DerivationHistoryTranslation.objects.get_or_create(
                                                         derivHist=derivhist,
                                                         language=translation_language_zho,

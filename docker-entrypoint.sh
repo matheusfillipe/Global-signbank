@@ -1,17 +1,23 @@
 #!/bin/bash
 set -e
 
-echo "Starting Global Signbank Docker setup..."
+echo "Starting Global Signbank setup..."
 
-# Simple approach: run syncdb to create all tables, then fake all migrations
-echo "Creating database schema..."
-python bin/develop.py migrate --run-syncdb --noinput || echo "Syncdb had issues, continuing..."
+# Create required directories
+echo "Creating required directories..."
+mkdir -p /app/writable/database
+mkdir -p /app/writable/media
+mkdir -p /app/writable/static
+mkdir -p /app/writable/ecv
+mkdir -p /app/media/ecv
+mkdir -p /app/media/othermedia
 
-echo "Marking all migrations as applied..."
-python bin/develop.py migrate --fake --noinput || echo "Fake migrations had issues, continuing..."
+# Check if database exists and run migrations
+echo "Running database migrations..."
+python bin/develop.py migrate --noinput
 
-# Create basic required data
-echo "Creating basic data..."
+# Create basic required data if it doesn't exist
+echo "Creating basic data if needed..."
 python bin/develop.py shell -c "
 # Create default language if it doesn't exist
 try:
@@ -23,10 +29,12 @@ try:
             language_code_3char='eng'
         )
         print('Created English language')
+    else:
+        print('English language already exists')
 except Exception as e:
-    print(f'Language creation failed: {e}')
+    print(f'Language setup failed: {e}')
 
-# Create default sign language and dataset
+# Create default sign language and dataset if they don't exist
 try:
     from signbank.dictionary.models import Dataset, SignLanguage
     if not SignLanguage.objects.exists():
@@ -34,6 +42,7 @@ try:
         print('Created default sign language')
     else:
         sl = SignLanguage.objects.first()
+        print('Sign language already exists')
 
     if not Dataset.objects.exists():
         ds = Dataset.objects.create(
@@ -43,12 +52,14 @@ try:
             is_public=True
         )
         print('Created default dataset')
+    else:
+        print('Dataset already exists')
 except Exception as e:
-    print(f'Dataset creation failed: {e}')
-" || echo "Data creation had issues, continuing..."
+    print(f'Dataset setup failed: {e}')
+" || echo "Data setup had issues, continuing..."
 
-# Create superuser
-echo "Creating superuser (admin/admin)..."
+# Create superuser only if it doesn't exist
+echo "Creating superuser if needed..."
 python bin/develop.py shell -c "
 from django.contrib.auth.models import User
 try:
@@ -56,10 +67,10 @@ try:
         User.objects.create_superuser('admin', 'admin@example.com', 'admin')
         print('Superuser created: admin/admin')
     else:
-        print('Superuser already exists')
+        print('Superuser admin already exists')
 except Exception as e:
-    print(f'Superuser creation failed: {e}')
-" || echo "Superuser creation failed, continuing..."
+    print(f'Superuser setup failed: {e}')
+" || echo "Superuser setup failed, continuing..."
 
 # Collect static files
 echo "Collecting static files..."
