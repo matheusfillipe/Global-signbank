@@ -1,0 +1,57 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      # Database persistence
+      - ./docker-data/database:/app/writable/database
+      # Media files persistence
+      - ./docker-data/media:/app/writable/media
+      - ./docker-data/static:/app/writable/static
+      - ./docker-data/upload:/app/writable/upload
+      - ./docker-data/glossvideo:/app/writable/glossvideo
+      - ./docker-data/sensevideo:/app/writable/sensevideo
+      - ./docker-data/annotatedvideo:/app/writable/annotatedvideo
+      - ./docker-data/glossimage:/app/writable/glossimage
+      - ./docker-data/comments:/app/writable/comments
+      - ./docker-data/handshapeimage:/app/writable/handshapeimage
+      - ./docker-data/othermedia:/app/writable/othermedia
+      - ./docker-data/import_images:/app/writable/import_images
+      - ./docker-data/import_videos:/app/writable/import_videos
+      - ./docker-data/api_video_archives:/app/writable/api_video_archives
+      - ./docker-data/import_other_media:/app/writable/import_other_media
+      - ./docker-data/packages:/app/writable/packages
+      - ./docker-data/eaf:/app/writable/eaf
+      - ./docker-data/eafs:/app/writable/eafs
+      - ./docker-data/metadata_eafs:/app/writable/metadata_eafs
+      - ./docker-data/test_data:/app/writable/test_data
+      - ./docker-data/video_backups:/app/writable/video_backups
+      - ./docker-data/prullenmand:/app/writable/prullenmand
+      - ./docker-data/ecv:/app/writable/ecv
+      - ./docker-data/attachments:/app/writable/attachments
+      # Development: mount source code for live editing
+      # Uncomment the next line for development
+      # - .:/app
+    environment:
+      - DEBUG=True
+      - SECRET_KEY=docker-dev-secret-key-change-in-production
+      - ALLOWED_HOSTS=localhost,127.0.0.1
+    stdin_open: true
+    tty: true
+
+  # Optional: PostgreSQL database service
+  # Uncomment this section if you prefer PostgreSQL over SQLite
+  # db:
+  #   image: postgres:15
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data/
+  #   environment:
+  #     POSTGRES_DB: signbank
+  #     POSTGRES_USER: signbank
+  #     POSTGRES_PASSWORD: signbank
+  #   ports:
+  #     - "5432:5432"
+
+# volumes:
+#   postgres_data:
