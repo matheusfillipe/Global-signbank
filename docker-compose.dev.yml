@@ -1,0 +1,29 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      # Writable data persistence
+      - ./docker-data:/app/writable
+      # Development: mount source code for live editing
+      - .:/app
+    environment:
+      - DEBUG=True
+      - SECRET_KEY=docker-dev-secret-key-change-in-production
+      - ALLOWED_HOSTS=localhost,127.0.0.1
+    stdin_open: true
+    tty: true
+
+  # Optional: PostgreSQL database service
+  # Uncomment this section if you prefer PostgreSQL over SQLite
+  # db:
+  #   image: postgres:15
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data/
+  #   environment:
+  #     POSTGRES_DB: signbank
+  #     POSTGRES_USER: signbank
+  #     POSTGRES_PASSWORD: signbank
+  #   ports:
+  #     - "5432:5432"
