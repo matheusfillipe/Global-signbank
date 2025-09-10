@@ -50,8 +50,7 @@ STATIC_ROOT = '/app/writable/static/'
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
-    # Only include directories that exist
-    # os.path.join(PROJECT_DIR, "media"),
+    os.path.join(PROJECT_DIR, "media"),
 )
 
 STATICFILES_FINDERS = (
@@ -82,7 +81,7 @@ CORS_ALLOW_CREDENTIALS = True
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(PROJECT_DIR, 'templates/mysignbank-templates'),
+        'DIRS': [os.path.join(PROJECT_DIR, 'templates/global-templates'),
                  os.path.join(PROJECT_DIR, 'signbank/registration/templates/')],
         'OPTIONS': {
             'context_processors': [

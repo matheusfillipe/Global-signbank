@@ -150,4 +150,8 @@ urlpatterns = [
     re_path(r'^update/remove_eaf_files/', signbank.dictionary.update.remove_eaf_files, name='remove_eaf_files'),
                 re_path(r'^__debug__/', include(debug_toolbar.urls)),
     re_path(r'^update/expiry/', signbank.dictionary.update.update_expiry, name='update_expiry'),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
